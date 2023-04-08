@@ -106,11 +106,11 @@
   {
     root = {
             password = "password";
-            inherit (openssh.authorizedKeys) keys;
+            openssh.authorizedKeys.keys = keys
           };
     slavni = {
       hashedPassword = "$y$j9T$ZQcBEEq/JtPjHIMNfT.R10$3txdoeaGHQtsKvxZz/z/2LtCsG.A1isj9r5HSI.utqD";
-      inherit (openssh.authorizedKeys) keys;
+      openssh.authorizedKeys.keys = keys
     };
   };
 
