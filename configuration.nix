@@ -111,6 +111,9 @@
     slavni = {
       hashedPassword = "$y$j9T$ZQcBEEq/JtPjHIMNfT.R10$3txdoeaGHQtsKvxZz/z/2LtCsG.A1isj9r5HSI.utqD";
       openssh.authorizedKeys.keys = keys;
+
+    isNormalUser = true;
+    extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
     };
   };
 
