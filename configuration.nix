@@ -17,12 +17,12 @@
   # boot.loader.grub.efiInstallAsRemovable = true;
   # boot.loader.efi.efiSysMountPoint = "/boot/efi";
   # Define on which hard drive you want to install Grub.
-  # boot.loader.grub.device = "/dev/sda"; # or "nodev" for efi only
+  boot.loader.grub.device = "/dev/sda"; # or "nodev" for efi only
 
-  # networking.hostName = "nixos"; # Define your hostname.
+  networking.hostName = "nixos"; # Define your hostname.
   # Pick only one of the below networking options.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-  # networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
+  networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
 
   # Set your time zone.
   # time.timeZone = "Europe/Amsterdam";
@@ -32,7 +32,7 @@
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   # Select internationalisation properties.
-  # i18n.defaultLocale = "en_US.UTF-8";
+  i18n.defaultLocale = "en_US.UTF-8";
   # console = {
   #   font = "Lat2-Terminus16";
   #   keyMap = "us";
@@ -71,10 +71,13 @@
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  # environment.systemPackages = with pkgs; [
-  #   vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-  #   wget
-  # ];
+  environment.systemPackages = with pkgs; [
+    wget
+    htop
+    git
+    vim
+    networkmanager
+   ];
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -87,7 +90,30 @@
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
+  services.openssh.enable = true;
+
+            services.vscode-server = {
+            enable = true;
+            enableFHS = true;
+          };
+
+  users.users = let 
+    keys = [
+              "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCzCmDCtlGscpesHuoiruVWD2IjYEFtaIl9Y2JZGiOAyf3V17KPx0MikcknfmxSHi399SxppiaXQHxo/1wjGxXkXNTTv6h1fBuqwhJE6C8+ZSV+gal81vEnXX+/9w2FQqtVgnG2/mO7oJ0e3FY+6kFpOsGEhYexoGt/UxIpAZoqIN+CWNhJIASUkneaZWtgwiL8Afb59kJQ2E7WbBu+PjYZ/s5lhPobhlkz6s8rkhItvYdiSHT0DPDKvp1oEbxsxd4E4cjJFbahyS8b089NJd9gF5gs0b74H/2lUUymnl63cV37Mp4iXB4rtE69MbjqsGEBKTPumLualmc8pOGBHqWIdhAqGdZQeBajcb6VK0E3hcU0wBB+GJgm7KUzlAHGdC3azY0KlHMrLaZN0pBrgCVR6zBNWtZz2B2qMBZ8Cw+K4vut8GuspdXZscID10U578GxQvJAB9CdxNUtrzSmKX2UtZPB1udWjjIAlejzba4MG73uXgQEdv0NcuHNwaLuCWxTUT5QQF18IwlJ23Mg8aPK8ojUW5A+kGHAu9wtgZVcX1nS5cmYKSgLzcP1LA1l9fTJ1vqBSuy38GTdUzfzz7AbnkRfGPj2ALDgyx17Rc5ommjc1k0gFoeIqiLaxEs5FzDcRyo7YvZXPsGeIqNCYwQWw3+U+yUEJby8bxGb2d/6YQ=="
+              "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC7qikwR0a4LDoMQIVvtX+gyJ41OsAOWe8RcXc4ksIBP9x1nCcSrItlgC2soADB77QGIgyeyLGmnTCtMj5/s8NdREAycPeXLii1WRakbT7oZ/hTEmvAgObpadeYJn3LhaUDNtmsnAqqh2pRpCpSsAdhfIt+YyV4VgRYSfaa12Ozp/H6NI9bJMNttmG8TmY9V4zyskV9bE+up9y8Yuck2bZV/GjQe6UWgxsiC3XPSrFFGuxyaFMRGsc8h86xVwTAmwaHESEFhRvHD4EtdPNss0jqmSI6m4AoSZQ2wq7eiH8ZiYzERF0FnEFf4UsyOTM7j78bfogNLfKrdcEIPLrNNFFc3Iarfe9CJn3DdSnwwPnhFU1MBBXSbGOp1IyN3+gpjHwLMPzozlDAVqOwx6XpnpF78VpeknFBHCbkcKC/R0MXzqf900wH3i2HvfB7v9e9EUFzCQ0vUC+1Og+BFw3F5VSo0QtZyLc4BJ/akBs5mEE6TnuWQa/GhlY8Lz7wbcV1AaBOAQdx+NTbL/+Q31SJ1XsXtGtXCrwMY9noUTyVfpGVXo7Mn4HSslmeQ9SKfYKjyetkBR/1f8a47O3rCggjBy1AlfLjgbERnXy+0Ma4T8lnPZAKt3s9Ya1JupZ7SO7D5j7WfPKP+60c372/RrX1wXsxEeLvBJ0jd8GnSCXDOuvHTQ=="
+            ];
+    in
+  {
+    root = {
+            password = "password";
+            inherit (openssh.authorizedKeys) keys;
+          };
+    slavni = {
+      hashedPassword = "$y$j9T$ZQcBEEq/JtPjHIMNfT.R10$3txdoeaGHQtsKvxZz/z/2LtCsG.A1isj9r5HSI.utqD";
+      inherit (openssh.authorizedKeys) keys;
+    }
+  }
+
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
@@ -107,6 +133,29 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "23.05"; # Did you read the comment?
+
+nix = {
+    optimise.automatic = true;
+
+    settings = {
+      auto-optimise-store = true;
+      trusted-users = [
+        "root"
+        "slavni"
+        "@wheel"
+      ];
+    };
+
+    extraOptions = ''
+      experimental-features = nix-command flakes
+    '';
+
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 30d";
+    };
+  };
 
 }
 
